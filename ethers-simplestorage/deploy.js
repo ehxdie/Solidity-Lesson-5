@@ -5,15 +5,17 @@ const ethers = require("ethers");
 // To read the smart contract abi and binary from other javascript files
 const fs = require("fs");
 
+require("dotenv").config();
+
 
 // Deploy function
 async function main() {
     // http://0.0.0.0:7545
     // This will allow the main() function to communicate with the garnache server
-    const provider = new ethers.providers.JsonRpcProvider("http://0.0.0.0:7545");
+    const provider = new ethers.providers.JsonRpcProvider(process.env.RPC_URL);
     
     // Using the provider to get a wallet
-    const wallet = new ethers.Wallet("wallet private key",provider);
+    const wallet = new ethers.Wallet(process.env.PRIVATE_KEY,provider);
 
     // To interact with the smart contract
     // Getting the abi
