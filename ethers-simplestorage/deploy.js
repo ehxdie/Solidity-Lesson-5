@@ -17,6 +17,13 @@ async function main() {
     // Using the provider to get a wallet
     const wallet = new ethers.Wallet(process.env.PRIVATE_KEY,provider);
 
+    /* 
+        using the encrypted private key
+    const encryptedJson = fs.readFileSync(".encrypted.json",utf8);
+    let wallet = new ethers.Wallet.fromEncryptedJsonSync(encryptedjson,process.env.PRIVATE_KEY);
+    wallet = await wallet.connect(provider);
+    */
+
     // To interact with the smart contract
     // Getting the abi
     const abi = fs.readFileSync("./SimpleStorage_sol_SimpleStorage.abi", "utf-8");
