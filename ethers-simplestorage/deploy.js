@@ -30,7 +30,7 @@ async function main() {
     const contract = await contractFactory.deploy();
 
     // Transaction receipt
-    const transactionReceipt = await contract.deploymentTransaction.wait(1);
+    await contract.deploymentTransaction.wait(1);
 
     /*
     Carrying out the deployment of a contract by defining the transaction 
@@ -51,7 +51,24 @@ async function main() {
     const sentTxResponse = await wallet.sendTransaction(tx);
 
     console.log(signedTxResponse)*/
+
+    // Interacting with the blockchain
+    // Calling the retrieve function to get the current favorite number
+    const currentFavoriteNumber = await contract.retrieve();
+
+    // Calling the store function to set a new favorite number
+    const transactionResponse = await contract.store("5");
+
+    // Getting the transaction receipt and waiting for block confirmation
+    const transactionReceipt = await contract.wait(1);
+
+    // Getting updatedfavorite number
+    const updatedFavoriteNumber = await contract.retrieve();
+     
+
 }
+
+
 
 // This checks if the async function has executed properly, if not it returns the error message
 main()
