@@ -41,7 +41,7 @@ async function main() {
     console.log(await contract.getAddress());
 
     const tx = await contract.deploymentTransaction();
-    console.log(await tx.wait(2))
+    console.log(await tx.wait(1))
 
 
     /*
