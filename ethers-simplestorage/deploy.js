@@ -40,20 +40,9 @@ async function main() {
 
     console.log(await contract.getAddress());
 
-    // Transaction receipt
-    if (contract.deployTransaction) {
-        try {
-            // The following lines wait for the contract deployment transaction to be mined
-            await contract.deployTransaction.wait();
-            console.log("Transaction mined");
-        } catch (error) {
-            console.error("Error waiting for deployment transaction:", error.message);
-            return;
-        }
-    } else {
-        console.error("Deploy transaction information not available. Contract may not be deployed.");
-        return;
-    }
+    const tx = await contract.deploymentTransaction();
+    console.log(await tx.wait(2))
+
 
     /*
     Carrying out the deployment of a contract by defining the transaction 
@@ -82,10 +71,10 @@ async function main() {
 
     // Calling the store function to set a new favorite number
     const transactionResponse = await contract.store("5");
-    console.log(transactionResponse);
+
 
     // Getting the transaction receipt and waiting for block confirmation
-    const transactionReceipt = await contract.wait(1);
+    const transactionReceipt = await transactionResponse.wait(1);
 
     // Getting updatedfavorite number
     const updatedFavoriteNumber = await contract.retrieve();
