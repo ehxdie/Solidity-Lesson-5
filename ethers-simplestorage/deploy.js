@@ -12,10 +12,10 @@ require("dotenv").config();
 async function main() {
     // http://0.0.0.0:7545
     // This will allow the main() function to communicate with the garnache server
-    const provider = new ethers.providers.JsonRpcProvider(process.env.RPC_URL);
-    
+    const provider = new ethers.JsonRpcProvider(process.env.RPC_URL);
+
     // Using the provider to get a wallet
-    const wallet = new ethers.Wallet(process.env.PRIVATE_KEY,provider);
+    const wallet = new ethers.Wallet(process.env.PRIVATE_KEY, provider);
 
     /* 
         using the encrypted private key
@@ -26,20 +26,34 @@ async function main() {
 
     // To interact with the smart contract
     // Getting the abi
-    const abi = fs.readFileSync("./SimpleStorage_sol_SimpleStorage.abi", "utf-8");
+    const abi = fs.readFileSync("./SimpleStorage_sol_SimpleStorage.abi", "utf8");
 
     // Getting the binary
-    const binary = fs.readFileSync("./SimpleStorage_sol_SimpleStorage.bin", "utf-8");
+    const binary = fs.readFileSync("./SimpleStorage_sol_SimpleStorage.bin", "utf8");
 
     // Deployment area
     // The contractFactory is what acts like a meduim of connection to the smart contract
-    const contractFactory = new ethers.contractFactory(abi,binary,wallet);
+    const contractFactory = new ethers.ContractFactory(abi, binary, wallet);
 
     // The actual deploying of the contract 
     const contract = await contractFactory.deploy();
 
+    console.log(await contract.getAddress());
+
     // Transaction receipt
-    await contract.deploymentTransaction.wait(1);
+    if (contract.deployTransaction) {
+        try {
+            // The following lines wait for the contract deployment transaction to be mined
+            await contract.deployTransaction.wait();
+            console.log("Transaction mined");
+        } catch (error) {
+            console.error("Error waiting for deployment transaction:", error.message);
+            return;
+        }
+    } else {
+        console.error("Deploy transaction information not available. Contract may not be deployed.");
+        return;
+    }
 
     /*
     Carrying out the deployment of a contract by defining the transaction 
@@ -64,16 +78,18 @@ async function main() {
     // Interacting with the blockchain
     // Calling the retrieve function to get the current favorite number
     const currentFavoriteNumber = await contract.retrieve();
+    console.log(currentFavoriteNumber.toString());
 
     // Calling the store function to set a new favorite number
     const transactionResponse = await contract.store("5");
+    console.log(transactionResponse);
 
     // Getting the transaction receipt and waiting for block confirmation
     const transactionReceipt = await contract.wait(1);
 
     // Getting updatedfavorite number
     const updatedFavoriteNumber = await contract.retrieve();
-     
+    console.log(updatedFavoriteNumber.toString())
 
 }
 

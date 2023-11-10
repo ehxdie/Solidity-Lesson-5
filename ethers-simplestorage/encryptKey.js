@@ -13,7 +13,7 @@ async function main () {
     )
     
     // Writing the encryption details to a "./encryptedKey.json"
-    fs.writeFileSync('./.encryptedKey.json', encryptedJsonKey)
+    fs.writeFileSync('./.encryptedKey.json', encryptedJsonKey);
 
 
 }
